@@ -1,0 +1,140 @@
+{{extend '../layouts/layout.html'}}
+
+{{block 'body'}}
+<div class="container-fluid">
+  <div class="page-title">
+    <h1>我的个人资料</h1>
+  </div>
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-3 control-label">头像</label>
+      <div class="col-sm-6">
+        <label class="form-image">
+          <input id="avatar" type="file">
+          <img src="{{admin_pic}}" id="avatar_img">
+          <input id="avatar_hidden" type="hidden"  name="pic">
+          <i class="mask fa fa-upload"></i>
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email" class="col-sm-3 control-label">邮箱</label>
+      <div class="col-sm-6">
+        <input id="email" class="form-control" name="email" type="type" value="{{admin_email}}" readonly>
+        <p class="help-block">登录邮箱不允许修改</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="nickname" class="col-sm-3 control-label">昵称</label>
+      <div class="col-sm-6">
+        <input id="nickname" class="form-control" name="nickname" type="type" value="{{admin_nickname}}" >
+        <p class="help-block">限制在 2-16 个字符</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="bio" class="col-sm-3 control-label">简介</label>
+      <div class="col-sm-6">
+        <textarea id="bio" class="form-control" name="sign" cols="30" rows="6">{{admin_sign}}</textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-3 col-sm-6">
+        <button type="button" class="btn btn-primary">更新</button>
+        <a class="btn btn-link" href="/admin/center/passwd">修改密码</a>
+      </div>
+    </div>
+  </form>
+</div>
+
+{{/block}}
+
+{{block 'js'}}
+
+<script>
+// $('#avatar').change(function(){
+//   // alert(123)
+//   // 获取上传的文件对象 再追加到formdate表单中
+//   // $(this)[0] 是dom对象    里面有一个files[0]的方法 里面是图片的信息
+//   var fileObj = $(this)[0].files[0]
+//   // console.dir(fileObj)
+//   //发送ajax 请求时  如果发送文件对象 必须适应formdate属性
+
+
+  
+//   var fd = new FormData();
+//   // 只需要 把文件对象添加进去就行   表单里的其他数据没必要添加进去
+//   fd.append('avatar',fileObj)
+
+//   $.ajax({
+//     url:' /api/uploads',
+//     type:'post',
+//     data:fd,
+//     dataType:'json',
+//     contentType:false,
+//     processData:false,
+//     success:function(msg){
+//       if(msg.code == 200){
+//         // console.log(msg.message)
+//         // attr(key,value) 设置属性   attr(key) 获取属性
+//         $('#avatar_img').attr('src',msg.path);
+//         // 设置隐藏input的value值 方便下面发ajax
+//         $('#avatar_hidden').val(msg.path);
+//       }
+//     }
+//   })
+// })
+// // 点击更新按钮 获取内容 发送ajax 
+// // 此时api文档 给出了 email nickname sign pic 四个属性 所以必须在上边找到这个是四个name
+// // pic 是后续加的隐藏属性
+// $('.btn-primary').click(function(){
+//     $.ajax({
+//       url:'/api/center/personal',
+//       data:$('.form-horizontal').serialize(),
+//       dataType:'json',
+//       type:'post',
+//       success:function(msg){
+//         alert(msg.message)
+//       }
+//     })
+// })
+
+$('#avatar').change(function(){
+  var fileObj = $(this)[0].files[0]
+  // console.log(fileObj)
+  var fd = new FormData();
+  fd.append('avatar',fileObj);
+  $.ajax({
+    url:' /api/uploads',
+    dataType:'json',
+    data:fd,
+    type:'post',
+    contentType:false,
+    processData:false,
+    success:function(msg){
+      console.log(msg)
+
+      $('#avatar_img').attr('src',msg.path).show();
+      $('#avatar_hidden').val(msg.path)
+    }
+  })
+})
+
+$('.btn-primary').click(function(){
+      $.ajax({
+        url:'/api/center/personal',
+        data:$('.form-horizontal').serialize(),
+        dataType:'json',
+        type:'post',
+        success:function(msg){
+          // console.log(msg)
+          alert(msg.message)
+          parent.location.reload()
+        }
+      })
+})
+
+
+
+
+</script>
+{{/block}}

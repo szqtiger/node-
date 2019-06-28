@@ -1,0 +1,158 @@
+{{extend '../layouts/layout.html'}}
+
+
+{{block 'css'}}
+
+<link href="/assets/vendors/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+{{/block}}
+{{block 'body'}}
+
+<div class="container-fluid">
+  <div class="page-title">
+    <h1>写文章</h1>
+  </div>
+  <form class="row" id="addForm">
+    <div class="col-md-9">
+      <div class="form-group">
+        <label for="title">文章标题</label>
+        <input id="title" class="form-control input-lg" name="title" type="text">
+      </div>
+
+      <div class="form-group">
+          <label for="desc">文章摘要</label>
+          <textarea id="desc" class="form-control input-lg" name="desc" cols="30" rows="3"></textarea>
+        </div>
+
+      <div class="form-group">
+        <label for="content">文章内容</label>
+        <textarea id="content" class="form-control input-lg" name="content" cols="30" rows="10"></textarea>
+      </div>
+    </div>
+    <div class="col-md-3">
+
+
+
+      <div class="form-group">
+        <label for="feature">文章封面图片</label>
+        <!-- show when image chose -->
+        <img class="help-block thumbnail" style="display: none">
+        <input id="feature" class="form-control" name="feature" type="file">
+        <!-- 后续加的 -->
+        <input type="hidden" name="pic" id="feature_hidden"> 
+      </div>
+
+
+
+      <div class="form-group">
+        <label for="category">所属分类</label>
+        <select id="category" class="form-control" name="category">
+
+          
+          
+        </select>
+      </div>
+     
+      <div class="form-group">
+        <label for="status">状态</label>
+        <select id="status" class="form-control" name="status">
+          <option value="草稿">草稿</option>
+          <option value="已发布">已发布</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary" id="save" type="submit">保存</button>
+      </div>
+    </div>
+  </form>
+</div>
+{{/block}}
+
+{{block 'js'}}
+<script type="text/javascript" charset="utf-8" src="/assets/vendors/umeditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/assets/vendors/umeditor/umeditor.min.js"></script>
+<script type="text/javascript" src="/assets/vendors/umeditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="/assets/vendors/art-template/template-web.js"></script>
+
+<script type="text/html" id="moban">
+
+  {#each data#}
+
+  <option value="$value.cate_id">{#$value.cate_name#}</option>
+  {#/each#}
+
+</script>
+
+
+
+<script>
+// 父编辑器
+var um = UM.getEditor('content', {
+  initialFrameWidth: '100%',
+  initialFrameHeight:200
+});
+//重设页面模板引擎所需要的定界符
+template.defaults.rules[1].test = /{#([@#]?)[ \t]*(\/?)([\w\W]*?)[ \t]*#}/;
+
+$.ajax({
+  url:'/api/cate/getCate',
+  dataType:'json',
+  type:'post',
+  success:function(msg){
+    // console.log(msg)
+    var str =  template('moban',msg)
+    $('#category').html(str)
+  }
+})
+
+
+// 文件域上注册onchange事件
+// 获取文件对象 -- formdata
+// 发送ajax 并把文件对象发送给后端
+
+$('#feature').change(function(){
+
+  var fileObj = $(this)[0].files[0]
+  var fd = new FormData();
+  fd.append('avatar',fileObj);   // 把保存的文件保存到formdata中,key值必须为avatar
+
+  $.ajax({
+    url:'/api/uploads',
+    data:fd,
+    dataType:'json',
+    type:'post',
+
+    contentType:false,
+    processData:false,
+
+    success:function(msg){
+
+      console.log(msg) // code:200 message:图片上传成功 path:"\upload\avatar-1554037369486.jpg"
+      //给隐藏的img 添加一个src属性 并显示出来
+      $('.help-block').attr('src',msg.path).show()
+
+      $('#feature_hidden').val(msg.path);
+    }
+  })
+})
+
+
+$('#save').click(function(){
+
+  $.ajax({
+    url:'/api/post/addpost',
+    data: $('#addForm').serialize(),
+    dataType:'json',
+    type:'post',
+    success:function(msg){
+
+      alert(msg.message);
+      if(msg.code == 200){
+
+      }
+    }
+  })
+})
+
+
+</script>
+{{/block}}

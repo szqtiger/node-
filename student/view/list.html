@@ -1,0 +1,31 @@
+{{extend './common.html'}}
+
+{{block 'body'}}
+<div class="content">
+      <div class="panel new">
+        <h3>{{name[0].cate_name}}</h3>
+        {{each list}}
+        <div class="entry">
+          <div class="head">
+            <a href="/detail?id={{$value.article_id}}">{{$value.article_title}}</a>
+          </div>
+          <div class="main">
+            <p class="info">{{$value.admin_nickname}} 发表于 {{$value.article_addtime}}</p>
+            <p class="brief">{{$value.article_desc}}</p>
+            <p class="extra">
+              <span class="reading">阅读({{$value.article_click}})</span>
+              <span class="comment">评论({{$value.article_cmt}})</span>
+              <a href="javascript:;" class="like">
+                <i class="fa fa-thumbs-up"></i>
+                <span>赞({{$value.article_good}})</span>
+              </a>
+            </p>
+            <a href="javascript:;" class="thumb">
+              <img src="{{$value.article_file}}" alt="">
+            </a>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+{{/block}}

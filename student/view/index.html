@@ -1,0 +1,111 @@
+{{extend './common.html'}}
+
+
+{{block 'body'}}
+<div class="content">
+  <div class="swipe">
+    <ul class="swipe-wrapper">
+
+      {{each pic}}
+      <li>
+        <a href="#">
+          <img src="{{$value.pic_url}}">
+          <span>{{$value.pic_text}}</span>
+        </a>
+      </li>
+     {{/each}}
+      
+     
+    </ul>
+    <p class="cursor"><span class="active"></span><span></span><span></span><span></span></p>
+    <a href="javascript:;" class="arrow prev"><i class="fa fa-chevron-left"></i></a>
+    <a href="javascript:;" class="arrow next"><i class="fa fa-chevron-right"></i></a>
+  </div>
+  <div class="panel focus">
+    <h3>焦点关注</h3>
+    <ul>
+
+      {{each focus}}
+      {{if $index == 0}}
+      <li class="large">
+      {{else}}
+      <li>
+      {{/if}}
+        <a href="/detail?id={{$value.article_id}}">
+          <img src="{{$value.article_file}}" alt="">
+          <span>{{$value.article_title}}</span>
+        </a>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+  <div class="panel top">
+    <h3>一周热门排行</h3>
+    <ol>
+
+
+        {{each paihang}}
+        <li>
+          <i>{{$index+1}}</i>
+          <a href="/detail?id={{$value.article_id}}">{{$value.article_title}}</a>
+          <a href="javascript:;" class="like">赞({{$value.article_good}})</a>
+          <span>阅读 ({{$value.article_click}})</span>
+        </li>
+        {{/each}}
+      
+
+    </ol>
+  </div>
+  <div class="panel hots">
+    <h3>热门推荐</h3>
+    <ul>
+
+      {{each tuijian}}
+      <li>
+        <a href="/detail?id={{$value.article_id}}">
+          <img src="{{$value.article_file}}" alt="">
+          <span>{{$value.article_title}}</span>
+        </a>
+      </li>
+      {{/each }}
+     
+      
+    </ul>
+  </div>
+  <div class="panel new">
+
+    <h3>最新发布</h3>
+
+    {{each fabu}}
+    <div class="entry">
+      <div class="head">
+        <span class="sort">{{$value.cate_name}}</span>
+        <a href="/detail?id={{$value.article_id}}"></a>
+      </div>
+      <div class="main">
+        <p class="info">{{$value.admin_nickname}} 发表于 2015-06-29</p>
+        <p class="brief">{{$value.article_desc}} </p>
+        <p class="extra">
+          <span class="reading">阅读({{$value.article_click}})</span>
+          <span class="comment">评论(0)</span>
+          <a href="javascript:;" class="like">
+            <i class="fa fa-thumbs-up"></i>
+            <span>赞({{$value.article_good}})</span>
+          </a>
+          <a href="javascript:;" class="tags">
+            分类：<span>星球大战</span>
+          </a>
+        </p>
+        <a href="javascript:;" class="thumb">
+          <img src="{{$value.article_file}}" alt="">
+        </a>
+      </div>
+    </div>
+   {{/each}}
+
+
+
+
+  </div>
+</div>
+{{/block}}

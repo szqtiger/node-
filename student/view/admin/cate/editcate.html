@@ -1,0 +1,56 @@
+{{extend '../layouts/layout.html'}}
+
+{{block 'body'}}
+<div class="container-fluid">
+    <div class="page-title">
+      <h1>修改栏目</h1>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <form id="form">
+          <h2>修改栏目</h2>
+          <input type="hidden" name="id" value={{cate_id}}>
+          <div class="form-group">
+            <label for="name">名称</label>
+            <input id="name" class="form-control" name="name" type="text" value={{cate_name}}>
+          </div>
+          <div class="form-group">
+            <label for="icon">图标</label>
+            <input id="icon" class="form-control" name="icon" type="text" value={{cate_icon}}>
+          </div>
+          <div class="form-group">
+            <button class="btn editBtn btn-primary" type="button">修改</button>
+          </div>
+        </form>
+      </div>
+  
+    </div>
+  </div>
+  {{/block}}
+
+  {{block 'js'}}
+<script>
+
+$('.editBtn').click(function(){
+  $.ajax({
+      url:'/admin/cate/modifycate',
+      data:$('#form').serialize(),
+      dataType:'json',
+      type:'post',
+      success:function(msg){
+        console.log(msg)
+
+
+        if(msg.code == 200 ){
+          alert(msg.message)
+          location.href = '/admin/cate/cate'
+        }
+
+
+      }
+  })
+
+})
+</script>
+
+  {{/block}}

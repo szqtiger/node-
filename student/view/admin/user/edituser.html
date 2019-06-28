@@ -1,0 +1,118 @@
+  <link rel="stylesheet" href="/assets/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/vendors/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="/assets/vendors/nprogress/nprogress.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <script src="/assets/vendors/nprogress/nprogress.js"></script>
+
+
+  <div class="col-md-4">
+    <form id="edituserform">
+      <h2>编辑管理信息</h2>
+      <!-- 这是后期添加的隐藏id 为了是执行sql语句时 找不到id -->
+      <input type="hidden" name="id" value="{{admin_id}}">
+      <div class="form-group">
+        <label for="email">邮箱</label>
+        <input id="email" class="form-control" name="email" type="email" value="{{admin_email}}">
+      </div>
+      <div class="form-group">
+        <label for="nickname">昵称</label>
+        <input id="nickname" class="form-control" name="nickname" type="text" value="{{admin_nickname}}">
+      </div>
+      <div class="form-group">
+        <label for="tel">电话</label>
+        <input id="tel" class="form-control" name="tel" type="text" value="{{admin_tel}}">
+      </div>
+
+      <div class="form-group">
+        <label for="gender">性别</label>
+
+        {{if admin_gender == "男"}}
+        <input  name="gender" type="radio" value="男" checked>男
+        <input  name="gender" type="radio" value="女">女
+        {{else}}
+        <input  name="gender" type="radio" value="男" >男
+        <input  name="gender" type="radio" value="女" checked>女
+        {{/if}}
+
+      </div>
+      
+
+
+      <div class="form-group">
+        <button class="btn btn-primary" type="submit">提交编辑</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="/assets/vendors/jquery/jquery.js"></script>
+  <script src="/assets/vendors/bootstrap/js/bootstrap.js"></script>
+  <script src="/assets/vendors/validate/jquery.validate.js"></script>
+               
+
+ <script>
+ $('#edituserform').validate({
+  //定义验证规则
+  rules: {
+    email: {
+      required: true, //必填项
+      email: true, //邮箱格式必须正确
+    },
+    nickname: {
+      required: true, //必填项
+      maxlength: 16, //昵称最长为16位
+      minlength: 6, //昵称最短6位
+    },
+    tel: {
+      digits: true,
+      maxlength: 11,
+      minlength: 11
+    }
+  },
+  messages: { //未通过验证时的提示信息
+    email: {
+      required: '邮箱必填',
+      email: '请输入正确的邮箱格式'
+    },
+    nickname: {
+      required: '昵称是必填项',
+      maxlength: '昵称最长为16位',
+      minlength: '昵称最短6位'
+    },
+    tel: {
+      digits: '手机号必须为纯数字',
+      maxlength: '长度必须为11位',
+      minlength: '长度必须为11位'
+    }
+  },
+  submitHandler: function () {
+   
+    $.ajax({
+      url:'/admin/user/modifyuser',
+      data:$('#edituserform').serialize(),
+      dataType:'json',
+      type:'post',
+      success:function(msg){
+
+
+        if(msg.code == 200){
+          // 关闭弹出层 刷新父页面
+
+          var index = parent.layer.getFrameIndex(window.name);
+          parent.layer.close(index);
+
+          parent.location.reload();
+
+        }
+      }
+    })
+  }
+})
+
+ 
+ </script>
+  <script>
+    NProgress.done()
+  </script>
+  </body>
+
+  </html>
